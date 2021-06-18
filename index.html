@@ -9,5 +9,14 @@
 <body>
   
   <script src="./engine/Loader.js"></script>
+  <script>
+    const {Loader} = GameEngine
+    const loader = new Loader()
+    loader.addImage('lodka', './static/img/lodka.jpg')
+    loader.addJson('persons', './static/jsons/persons.json')
+    loader.load(() => {
+      console.log('content loaded')
+    })
+  </script>
 </body>
 </html>
