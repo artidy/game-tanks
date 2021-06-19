@@ -9,13 +9,42 @@
 <body>
   
   <script src="./engine/Loader.js"></script>
+  <script src="./engine/Renderer.js"></script>
+  <script src="./engine/Sprite.js"></script>
+  <script src="./engine/Container.js"></script>
   <script>
-    const {Loader} = GameEngine
+    const {Loader, Renderer, Sprite, Container} = GameEngine
     const loader = new Loader()
+    const renderer = new Renderer({
+        width: 500,
+        height: 500,
+        background: 'grey'
+      },
+      (timestamp) => {
+        renderer.stage.sprites.forEach(sprite => {
+          // sprite.x = renderer.canvas.width / 2 + 100 * Math.cos(timestamp / 100)
+          // sprite.y = renderer.canvas.height / 2 + 100 * Math.sin(timestamp / 100)
+        })
+        
+      }
+    )
+    document.body.append(renderer.canvas)
     loader.addImage('lodka', './static/img/lodka.jpg')
     loader.addJson('persons', './static/jsons/persons.json')
     loader.load(() => {
-      console.log('content loaded')
+      const sprite = new Sprite(loader.getImage('lodka'), {
+        anchorX: 0.5,
+        anchorY: 0.5
+      })
+      sprite.scale = 0.25
+      sprite.absoluteX = 0
+      sprite.absoluteY = 0
+      renderer.stage.add(sprite)
+      const container = new Container()
+      container.add(sprite)
+      renderer.stage.add(container)
+      console.log(container.sprites)
+      console.log(renderer.sprites)
     })
   </script>
 </body>

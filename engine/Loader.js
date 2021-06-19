@@ -8,8 +8,8 @@
         jsons: []
       }
       this.resources = {
-        images: [],
-        jsons: []
+        images: {},
+        jsons: {}
       }
     }
 
@@ -19,6 +19,14 @@
 
     addJson(name, src) {
       this.register.jsons.push({name, src})
+    }
+
+    getImage(name) {
+      return this.resources.images[name]
+    }
+
+    getJson(name) {
+      return this.resources.jsons[name]
     }
 
     load(callback) {
