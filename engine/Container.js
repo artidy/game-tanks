@@ -1,21 +1,41 @@
 (function() {
   'use strict'
 
-  class Container {
-    constructor() {
+  class Container extends GameEngine.DisplayObject {
+    constructor(args = {}) {
+      super(args)
       this.objects = []
     }
 
-    add(sprite) {
-      if (!this.objects.includes(sprite)) {
-        this.objects.push(sprite)
-      }
+    add(parent = null, ...objects) {
+      objects.forEach(object => {
+        if (!this.objects.includes(object)) {
+          this.objects.push(object)
+          object.parent = parent ? parent : this
+        }
+      })
     }
 
-    remove() {}
+    remove(...objects) {
+      objects.forEach(object => {
+        if (this.objects.includes(object)) {
+          const index = this.objects.indexOf(object)
+          this.objects.splice(index, 1)
+          object.parent = null
+        }
+      })
+    }
 
     draw(canvas, context) {
-      this.sprites.forEach(sprite => sprite.draw(canvas, context))
+      super.draw(() => {
+        // console.log(this.objects)
+        context.save()
+        context.translate(this.x, this.y)
+        context.rotate(this.rotation)
+        context.scale(this.scaleX, this.scaleY)
+        this.objects.forEach(item => item.draw(canvas, context))
+        context.restore()
+      })
     }
 
     get sprites() {

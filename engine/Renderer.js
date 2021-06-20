@@ -22,15 +22,6 @@
       Object.keys(this.styles).forEach(key => {
         this.canvas[key] = this.styles[key]
       })
-
-      requestAnimationFrame(timestamp => this.tick(timestamp))
-    }
-
-    tick(timestamp) {
-      this.update(timestamp)
-      this.clear()
-      this.render()
-      requestAnimationFrame(timestamp => this.tick(timestamp))  
     }
 
     render() {
