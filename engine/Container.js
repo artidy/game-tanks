@@ -16,6 +16,12 @@
       })
     }
 
+    changePosition(timestamp) {
+      this.objects.forEach(object => {
+        object.changePosition(timestamp)
+      })
+    }
+
     remove(...objects) {
       objects.forEach(object => {
         if (this.objects.includes(object)) {

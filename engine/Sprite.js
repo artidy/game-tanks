@@ -2,13 +2,19 @@
   'use strict'
 
   class Sprite extends GameEngine.DisplayObject {
-    constructor(texture, args = {}) {
+    constructor(texture, args) {
       super({
         width: texture.width,
         height: texture.height,
         ...args
       })
       this.texture = texture
+      this.frames = args.frames || []
+      this.velocity = {
+        x: 0,
+        y: 0,
+        ...args.velocity
+      }
       this.frame = {
         x: 0,
         y: 0,
@@ -16,6 +22,40 @@
         height: texture.height,
         ...args.frame
       }
+    }
+
+    changePosition(timestamp) {
+      this.x += this.velocity.x
+      this.y += this.velocity.y
+    }
+
+    setFrame(...keys) {
+      const frame = this.getFrame(...keys)
+      
+      if (!frame) {
+        return false
+      }
+      this.frame = {
+        ...this.frame,
+        ...frame
+      }
+    }
+
+    getFrame(...keys) {
+      let flag = false
+      return this.frames.find(frame => {
+        flag = true
+        keys.forEach(key => {
+          if (!frame.keys.includes(key)) {
+            flag = false
+            return
+          }
+        })
+        if (flag) {
+          return frame
+        }
+      })
+     
     }
 
     draw(canvas, context) {

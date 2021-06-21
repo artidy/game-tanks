@@ -42,10 +42,16 @@
     }
 
     tick(timestamp) {
-      // this.renderer.update(timestamp)
+  
       this.currentScenes.forEach(scene => {
         if (scene.status === 'started') {
           scene.update(timestamp)
+        }
+      })
+
+      this.currentScenes.forEach(scene => {
+        if (scene.status === 'started') {
+          scene.changePosition(timestamp)
         }
       })
 
