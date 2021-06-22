@@ -9,7 +9,14 @@
         ...args
       })
       this.texture = texture
-      this.frames = args.frames || []
+
+      this.frames = []
+      this.frameNumber = 0
+      this.frameDelay = 0
+
+      this.animations = {}
+      this.currentAnimation = ''
+
       this.velocity = {
         x: 0,
         y: 0,
@@ -25,8 +32,33 @@
     }
 
     changePosition(timestamp) {
+      if (Util.delay(this.currentAnimation && 
+                    this.currentAnimation + this.uid, 
+                    this.frameDelay)) {
+        const {frames} = this.animations[this.currentAnimation]
+        this.frameNumber = (this.frameNumber + 1) % frames.length
+        this.setFrame(...frames[this.frameNumber])
+      }
       this.x += this.velocity.x
       this.y += this.velocity.y
+    }
+
+    setFrameCollection(frames) {
+      this.frames = frames
+    }
+
+    setAnimationsCollection(animations) {
+      this.animations = animations
+    }
+
+    startAnimation(animationName) {
+      if (!this.animations.hasOwnProperty(animationName)) {
+        return false
+      }
+      this.currentAnimation = animationName
+      const {duration, frames} = this.animations[this.currentAnimation]
+      this.frameDelay = duration / frames.length
+      this.setFrame(...frames[0])
     }
 
     setFrame(...keys) {
@@ -39,6 +71,9 @@
         ...this.frame,
         ...frame
       }
+
+      this.width = this.frame.width
+      this.height = this.frame.height
     }
 
     getFrame(...keys) {
@@ -52,7 +87,7 @@
           }
         })
         if (flag) {
-          return frame
+          return JSON.parse(JSON.stringify(frame))
         }
       })
      

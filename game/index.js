@@ -1,4 +1,4 @@
-const {Game, Scene, Body, Point, Line} = GameEngine
+const {Game, Scene, Body, Point, Line, Util} = GameEngine
 
 const mainScene = new Scene({
   name: 'mainScene',
@@ -9,9 +9,8 @@ const mainScene = new Scene({
   },
   init(loader) {
     const atlas = loader.getJson('skeletonAtlas')
-    this.skeleton = new Body(loader.getImage('skeleton'), {
-      frames: atlas.frames, 
-      scale: 2,
+    this.skeleton = new Body(loader.getImage('skeleton'), { 
+      scale: 1,
       x: this.parent.renderer.canvas.width / 2,
       y: this.parent.renderer.canvas.height / 2,
       anchorX: 0.5,
@@ -20,57 +19,56 @@ const mainScene = new Scene({
         debug: false
       }
     })
-    this.skeleton.setFrame('skeleton', 'up', 'frame1')
-    this.skeleton.width = this.skeleton.frame.width
-    this.skeleton.height = this.skeleton.frame.height
+    
+    this.skeleton.setFrameCollection(atlas.frames)
+    this.skeleton.setAnimationsCollection(atlas.actions)
+    // this.skeleton.setFrame('skeleton', 'up', 'frame1')
+    // this.skeleton.width = this.skeleton.frame.width
+    // this.skeleton.height = this.skeleton.frame.height
+    this.skeleton.startAnimation('moveDown')
     this.add(this, this.skeleton)
-    this.nextframe = 1
   },
   update(timestamp) {
     const {controller} = this.parent
+    let stay = true
 
     this.skeleton.velocity.x = 0
     this.skeleton.velocity.y = 0
   
     if (controller.buttonDown('ArrowUp')) {
-      if (this.nextframe > 7) {
-        this.nextframe = 1
+      if (this.skeleton.currentAnimation !== 'moveUp') {
+        this.skeleton.startAnimation('moveUp')
       }
-      this.skeleton.setFrame('skeleton', 'up', `frame${this.nextframe}`)
       this.skeleton.velocity.y = -5
-      this.nextframe += 1
+      stay = false
     }
 
     if (controller.buttonDown('ArrowDown')) {
-      if (this.nextframe > 7) {
-        this.nextframe = 1
+      if (this.skeleton.currentAnimation !== 'moveDown') {
+        this.skeleton.startAnimation('moveDown')
       }
-      this.skeleton.setFrame('skeleton', 'down', `frame${this.nextframe}`)
       this.skeleton.velocity.y = 5
-      this.nextframe += 1
+      stay = false
     }
 
     if (controller.buttonDown('ArrowLeft')) {
-      if (this.nextframe > 7) {
-        this.nextframe = 1
+      if (this.skeleton.currentAnimation !== 'moveLeft') {
+        this.skeleton.startAnimation('moveLeft')
       }
-      this.skeleton.setFrame('skeleton', 'left', `frame${this.nextframe}`)
       this.skeleton.velocity.x = -5
-      this.nextframe += 1
+      stay = false
     }
 
     if (controller.buttonDown('ArrowRight')) {
-      if (this.nextframe > 7) {
-        this.nextframe = 1
+      if (this.skeleton.currentAnimation !== 'moveRight') {
+        this.skeleton.startAnimation('moveRight')
       }
-      this.skeleton.setFrame('skeleton', 'right', `frame${this.nextframe}`)
       this.skeleton.velocity.x = 5
-      this.nextframe += 1
+      stay = false
     }
 
-    if (controller.buttonDown('Space')) {
-      this.skeleton.rotation = timestamp / 1000
-      // this.line.rotation = timestamp / 1000 так работать не будет
+    if (stay && this.skeleton.currentAnimation !== 'stayDown') {
+      this.skeleton.startAnimation('stayDown')
     }
 
     if (this.timeExist && this.timeExist < timestamp) {
