@@ -13,6 +13,33 @@
       }
     }
 
+    get bodyRect() {
+      return {
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height
+      }
+    }
+
+    get tops() {
+      const {x, y, width, height} = this.bodyRect
+      return [
+        [x, y], 
+        [x + width, y],
+        [x, y + height],
+        [x + width, y + height]
+      ]
+    }
+
+    isInside(x, y) {
+      return GameEngine.Util.isInside({x, y}, {
+        ...this.bodyRect,
+        x: this.bodyRect.x + this.velocity.x,
+        y: this.bodyRect.y + this.velocity.y
+      })
+    }
+
     draw(canvas, context) {
       if (!this.visible) {
         return

@@ -1,8 +1,9 @@
 (function() {
   'strict'
 
-  class DisplayObject {
+  class DisplayObject extends GameEngine.EventEmitter {
     constructor(args = {}) {
+      super()
       this.parent = null
       this.x = args.x || 0
       this.y = args.y || 0

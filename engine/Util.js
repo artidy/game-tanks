@@ -28,6 +28,11 @@
     }
   }
 
+  Util.isInside = function isInside(point, rect) {
+    return rect.x <= point.x && point.x <= rect.x + rect.width && 
+          rect.y <= point.y && point.y <= rect.y + rect.height
+  }
+
   const alphabet = "lsakjdlahslldjhahksjdhjwe97239642OLLJLKNHDGFSEXEAHGMBKJBUFRERSVJ!S73974k23jh42k3jh5l2hhk34l2h342k"
 
   function getRandomLetter() {
